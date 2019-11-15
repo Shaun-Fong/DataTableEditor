@@ -26,7 +26,7 @@
 # How To Use 使用 
  1.Download [GameFrameWork](https://gameframework.cn/) and import 下载框架导入 
   
- 2.Download [DataTableEditor](https://github.com/qtghost/DataTableEditor/releases/download/v0.0.1/DataTableEditor.v0.0.1.unitypackage) and import 下载该编辑器并导入 
+ 2.Download [DataTableEditor](https://github.com/qtghost/DataTableEditor/releases/latest) and import 下载该编辑器并导入 
   
- 3.Enjoin 大功告成 
+ 3.Enjoin！ 大功告成 
   
