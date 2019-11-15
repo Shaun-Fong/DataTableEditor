@@ -29,7 +29,7 @@ MonoBehaviour:
   IDNameRow: "ID\u540D\u79F0\u884C\u6570"
   IDTypeRow: "ID\u7C7B\u578B\u884C\u6570"
   CommentRow: "\u6CE8\u91CA\u884C\u6570"
-  CommentStartRow: "\u6CE8\u91CA\u5F00\u59CB\u884C\u6570"
+  ContentStartRow: "\u5185\u5BB9\u5F00\u59CB\u884C\u6570"
   IDColumn: "ID\u5217\u6570"
   Language: "\u8BED\u8A00"
   DataTablePath: "\u6570\u636E\u8868\u8DEF\u5F84"

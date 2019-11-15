@@ -38,7 +38,7 @@ namespace GameFramework.DataTableTools
         public string IDNameRow = "ID Name Row";
         public string IDTypeRow = "ID Type Row";
         public string CommentRow = "Comment Row";
-        public string CommentStartRow = "Comment Start Row";
+        public string ContentStartRow = "Content Start Row";
         public string IDColumn = "Id Column";
         public string Language = "Language";
 

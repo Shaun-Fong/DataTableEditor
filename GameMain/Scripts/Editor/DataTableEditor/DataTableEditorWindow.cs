@@ -19,6 +19,9 @@ using System.IO;
 
 namespace GameFramework.DataTableTools
 {
+    /// <summary>
+    /// 启动窗口
+    /// </summary>
     public class DataTableEditorLaunchWindow : EditorWindow
     {
 
@@ -30,7 +33,7 @@ namespace GameFramework.DataTableTools
         [MenuItem("Game Framework/DataTable Editor")]
         public static void OpenWindow()
         {
-            WindowRect = new Rect((Screen.currentResolution.width / 2) - (windowSize.x / 2), -(windowSize.y / 2), windowSize.x, windowSize.y);
+            WindowRect = new Rect((Screen.currentResolution.width / 2) - (windowSize.x / 2), (Screen.currentResolution.height / 2) - (windowSize.y / 2), windowSize.x, windowSize.y);
             var window = DataTableEditorLaunchWindow.GetWindowWithRect<DataTableEditorLaunchWindow>(WindowRect, true, DataTableEditorConfig.GetConfig().WindowTitle);
             window.minSize = windowSize;
             window.maxSize = windowSize;
@@ -39,7 +42,6 @@ namespace GameFramework.DataTableTools
 
         public static void OpenWindow(Vector2 position)
         {
-            WindowRect = new Rect((Screen.currentResolution.width / 2) - (windowSize.x / 2), -(windowSize.y / 2), windowSize.x, windowSize.y);
             Rect rect = new Rect(WindowRect);
             rect.position = position;
             var window = DataTableEditorLaunchWindow.GetWindowWithRect<DataTableEditorLaunchWindow>(rect, true, DataTableEditorConfig.GetConfig().WindowTitle);
@@ -54,9 +56,10 @@ namespace GameFramework.DataTableTools
         /// </summary>
         private void CreateDataTable()
         {
+            
             OSPlatformWindow.OpenFileName openFileName = new OSPlatformWindow.OpenFileName();
             openFileName.structSize = Marshal.SizeOf(openFileName);
-            openFileName.filter = DataTableEditorConfig.Filter;
+            openFileName.filter = DataTableEditorConfig.Filter;//文件格式过滤
             openFileName.file = new string(new char[256]);
             openFileName.maxFile = openFileName.file.Length;
             openFileName.fileTitle = new string(new char[64]);
@@ -67,14 +70,17 @@ namespace GameFramework.DataTableTools
 
             if (OSPlatformWindow.LocalDialog.GetSaveFileName(openFileName))
             {
-                //Debug.Log(openFileName.file);
-                //Debug.Log(openFileName.fileTitle);
+                this.Close();
                 DataTableEditorWindow.SaveWindow(openFileName.fileTitle.Replace(".txt", ""), this.position.position);
             }
         }
 
+        /// <summary>
+        /// 打开表格
+        /// </summary>
         private void OpenDataTable()
         {
+
             OSPlatformWindow.OpenFileName openFileName = new OSPlatformWindow.OpenFileName();
             openFileName.structSize = Marshal.SizeOf(openFileName);
             openFileName.filter = DataTableEditorConfig.Filter;
@@ -88,8 +94,7 @@ namespace GameFramework.DataTableTools
 
             if (OSPlatformWindow.LocalDialog.GetSaveFileName(openFileName))
             {
-                //Debug.Log(openFileName.file);
-                //Debug.Log(openFileName.fileTitle);
+                this.Close();
                 DataTableEditorWindow.OpenWindow(openFileName.fileTitle.Replace(".txt", ""), this.position.position);
             }
         }
@@ -97,7 +102,7 @@ namespace GameFramework.DataTableTools
 
         void OnGUI()
         {
-
+            //居中样式
             fontStyle.alignment = TextAnchor.MiddleCenter;
             titleStyle.alignment = TextAnchor.MiddleCenter;
             fontStyle.fontSize = 10;
@@ -116,15 +121,14 @@ namespace GameFramework.DataTableTools
 
             GUILayout.Space(30);
 
+            //按钮
             if (GUILayout.Button(DataTableEditorConfig.GetConfig().New, GUILayout.Height(50)))
             {
-                this.Close();
                 CreateDataTable();
             }
 
             if (GUILayout.Button(DataTableEditorConfig.GetConfig().Load, GUILayout.Height(50)))
             {
-                this.Close();
                 OpenDataTable();
             }
 
@@ -157,6 +161,9 @@ namespace GameFramework.DataTableTools
         }
     }
 
+    /// <summary>
+    /// 编辑窗口
+    /// </summary>
     public class DataTableEditorWindow : EditorWindow
     {
         private class Row
@@ -172,6 +179,11 @@ namespace GameFramework.DataTableTools
         private static string m_fileName;
         private static DataTableProcessor m_tableProcessor;
 
+        /// <summary>
+        /// 打开编辑窗口
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="position">位置</param>
         public static void OpenWindow(string fileName, Vector2 position)
         {
             m_fileName = fileName;
@@ -193,6 +205,10 @@ namespace GameFramework.DataTableTools
 
         }
 
+        /// <summary>
+        /// 用于刷新窗口
+        /// </summary>
+        /// <param name="position">位置</param>
         public static void OpenWindow(Vector2 position)
         {
             Rect rect = new Rect(DataTableEditorLaunchWindow.WindowRect);
@@ -204,6 +220,11 @@ namespace GameFramework.DataTableTools
             window.ShowUtility();
         }
 
+        /// <summary>
+        /// 新建
+        /// </summary>
+        /// <param name="fileName">文件名称</param>
+        /// <param name="position">窗户位置</param>
         public static void SaveWindow(string fileName, Vector2 position)
         {
             m_fileName = fileName;
@@ -291,6 +312,9 @@ namespace GameFramework.DataTableTools
             OpenWindow(m_fileName, position);
         }
 
+        /// <summary>
+        /// 保存数据表文件
+        /// </summary>
         private void SaveDataTable()
         {
             FileStream file = new FileStream(Path.Combine(DataTableGenerator.DataTablePath, m_fileName + ".txt"), FileMode.OpenOrCreate);
@@ -337,6 +361,9 @@ namespace GameFramework.DataTableTools
             bytesFile.Dispose();
         }
 
+        /// <summary>
+        /// 加载数据表文件
+        /// </summary>
         private static void LoadDataTable()
         {
             rows = new List<Row>();
@@ -423,6 +450,9 @@ namespace GameFramework.DataTableTools
         }
     }
 
+    /// <summary>
+    /// 生成窗口
+    /// </summary>
     public class DataTableGenerateWindow : EditorWindow
     {
         [System.Serializable]
@@ -432,11 +462,14 @@ namespace GameFramework.DataTableTools
             [SerializeField] public bool IsOn = false;
         }
 
-
         private static Vector2 windowSize = new Vector2(300, 400);
 
         public static ReorderableList m_datatableNames;
 
+        /// <summary>
+        /// 打开生成窗口
+        /// </summary>
+        /// <param name="position">窗口位置</param>
         public static void OpenWindow(Vector2 position)
         {
             Rect rect = new Rect(DataTableEditorLaunchWindow.WindowRect);
@@ -508,6 +541,9 @@ namespace GameFramework.DataTableTools
 
     }
 
+    /// <summary>
+    /// 设置窗口
+    /// </summary>
     public class DataTableEditorSettingWindow : EditorWindow
     {
 
@@ -523,6 +559,10 @@ namespace GameFramework.DataTableTools
         private static string m_CSharpCodePath = "";
         private static string m_CSharpCodeTemplateFileName = "";
 
+        /// <summary>
+        /// 打开设置窗口
+        /// </summary>
+        /// <param name="position">窗口位置</param>
         public static void OpenWindow(Vector2 position)
         {
 
@@ -575,7 +615,7 @@ namespace GameFramework.DataTableTools
 
             GUILayout.BeginHorizontal();
 
-            GUILayout.Label(DataTableEditorConfig.GetConfig().CommentStartRow, GUILayout.Width(120));
+            GUILayout.Label(DataTableEditorConfig.GetConfig().ContentStartRow, GUILayout.Width(120));
 
             m_datatableCommentStartRow = EditorGUILayout.IntField(m_datatableCommentStartRow, GUILayout.Width(60));
 
@@ -641,6 +681,9 @@ namespace GameFramework.DataTableTools
             }
         }
 
+        /// <summary>
+        /// 获取数据
+        /// </summary>
         private static void GetProcessorData()
         {
             m_datatableIDNameRow = DataTableProcessor.NameRow;
@@ -653,6 +696,9 @@ namespace GameFramework.DataTableTools
             m_CSharpCodeTemplateFileName = DataTableGenerator.CSharpCodeTemplateFileName;
         }
 
+        /// <summary>
+        /// 设置数据
+        /// </summary>
         private static void SetProcessorData()
         {
             DataTableProcessor.NameRow = m_datatableIDNameRow;
@@ -664,6 +710,9 @@ namespace GameFramework.DataTableTools
 
     }
 
+    /// <summary>
+    /// Windows对话框保存
+    /// </summary>
     public class OSPlatformWindow
     {
 

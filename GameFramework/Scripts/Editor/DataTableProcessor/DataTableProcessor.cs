@@ -147,12 +147,12 @@ namespace UnityGameFramework.Editor.DataTableTools
                 throw new GameFrameworkException(Utility.Text.Format("Type row '{0}' >= raw row count '{1}' is not allow.", TypeRow.ToString(), rawRowCount.ToString()));
             }
 
-            if (DefaultValueRow!=-1 && DefaultValueRow >= rawRowCount)
+            if (DefaultValueRow != -1 && DefaultValueRow >= rawRowCount)
             {
                 throw new GameFrameworkException(Utility.Text.Format("Default value row '{0}' >= raw row count '{1}' is not allow.", DefaultValueRow.ToString(), rawRowCount.ToString()));
             }
 
-            if (CommentRow!=-1 && CommentRow >= rawRowCount)
+            if (CommentRow != -1 && CommentRow >= rawRowCount)
             {
                 throw new GameFrameworkException(Utility.Text.Format("Comment row '{0}' >= raw row count '{1}' is not allow.", CommentRow.ToString(), rawRowCount.ToString()));
             }
@@ -170,7 +170,7 @@ namespace UnityGameFramework.Editor.DataTableTools
             m_NameRow = m_RawValues[NameRow];
             m_TypeRow = m_RawValues[TypeRow];
             m_DefaultValueRow = DefaultValueRow != -1 ? m_RawValues[DefaultValueRow] : null;
-            m_CommentRow = CommentRow!=-1 ? m_RawValues[CommentRow] : null;
+            m_CommentRow = CommentRow != -1 ? m_RawValues[CommentRow] : null;
 
             m_DataProcessor = new DataProcessor[rawColumnCount];
             for (int i = 0; i < rawColumnCount; i++)
