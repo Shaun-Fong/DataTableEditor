@@ -8,15 +8,19 @@
 # Feature 特性 
  
  New 新建数据表 
+  
  ![New](ExampleImage/New.gif)
  
  Load 加载数据表 
+  
  ![New](ExampleImage/Load.gif)
  
  Setting 配置数据表 
+  
  ![New](ExampleImage/Language.gif)
  
  Generate 生成数据 
+  
  ![New](ExampleImage/Generate.gif)
  
  
