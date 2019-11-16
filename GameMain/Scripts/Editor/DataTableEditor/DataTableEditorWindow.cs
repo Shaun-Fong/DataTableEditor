@@ -314,8 +314,6 @@ namespace GameFramework.DataTableTools
         {
             FileStream file = new FileStream(Path.Combine(DataTableGenerator.DataTablePath, m_fileName + ".txt"), FileMode.OpenOrCreate);
 
-            FileStream bytesFile = new FileStream(Path.Combine(DataTableGenerator.DataTablePath, m_fileName + ".bytes"), FileMode.OpenOrCreate);
-
             string line = "";
             for (int i = 0; i < rows.Count; i++)
             {
@@ -344,16 +342,9 @@ namespace GameFramework.DataTableTools
             }
             byte[] bts = System.Text.Encoding.Unicode.GetBytes(line);
             file.Write(bts, 0, bts.Length);
-            for (int i = 0; i < bts.Length; i++)
-            {
-                bytesFile.WriteByte(bts[i]);
-            }
             file.Flush();
-            bytesFile.Flush();
             file.Close();
-            bytesFile.Close();
             file.Dispose();
-            bytesFile.Dispose();
 
             AssetDatabase.Refresh();
         }
