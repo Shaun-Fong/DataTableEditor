@@ -312,7 +312,7 @@ namespace GameFramework.DataTableTools
         /// </summary>
         private void SaveDataTable()
         {
-            FileStream file = new FileStream(Path.Combine(DataTableGenerator.DataTablePath, m_fileName + ".txt"), FileMode.OpenOrCreate);
+            FileStream file = new FileStream(Path.Combine(DataTableGenerator.DataTablePath, m_fileName + ".txt"), FileMode.Create);
 
             string line = "";
             for (int i = 0; i < rows.Count; i++)
