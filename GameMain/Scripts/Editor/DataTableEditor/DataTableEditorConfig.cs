@@ -33,7 +33,8 @@ namespace GameFramework.DataTableTools
         public string AddRow = "AddRow";
         public string RemoveRow = "RemoveRow";
         public string Generate = "Generate";
-        public string Verision = "0.0.1";
+        public string NameSpace = "NameSpace";
+        public string Verision = "1.1.0";
 
         public string IDNameRow = "ID Name Row";
         public string IDTypeRow = "ID Type Row";
@@ -53,17 +54,11 @@ namespace GameFramework.DataTableTools
         {
             get
             {
-                string language = EditorUserSettings.GetConfigValue("DataTableEditor_Language");
-                if (string.IsNullOrEmpty(language))
-                {
-                    EditorUserSettings.SetConfigValue("DataTableEditor_Language", "1");
-                    return 1;
-                }
-                return int.Parse(language);
+                return int.Parse(GetData("Language", 0).ToString());
             }
             set
             {
-                EditorUserSettings.SetConfigValue("DataTableEditor_Language", value.ToString());
+                SetData("Language", value.ToString());
             }
         }
         public static DataTableEditorConfig GetConfig()
@@ -75,6 +70,60 @@ namespace GameFramework.DataTableTools
                 throw new System.Exception("Config is missing , create a new one.");
             }
             return config;
+        }
+
+        private static void SetConfigValue(string KeyName,string Value)
+        {
+            EditorUserSettings.SetConfigValue("DataTableEditor_" + KeyName, Value);
+        }
+
+        private static string GetConfigValue(string KeyName)
+        {
+            return EditorUserSettings.GetConfigValue("DataTableEditor_" + KeyName);
+        }
+
+        private static bool HasConfigValue(string KeyName)
+        {
+            return !string.IsNullOrEmpty(GetConfigValue(KeyName));
+        }
+
+
+        public static int GetData(string KeyName, int DefaultValue)
+        {
+            if (HasConfigValue(KeyName))
+            {
+                return int.Parse(GetConfigValue(KeyName));
+            }
+            else
+            {
+                SetConfigValue(KeyName, @DefaultValue.ToString());
+                return DefaultValue;
+            }
+        }
+
+        public static string GetData(string KeyName, string DefaultValue)
+        {
+            if (HasConfigValue(KeyName))
+            {
+                return GetConfigValue(KeyName);
+            }
+            else
+            {
+                SetConfigValue(KeyName, @DefaultValue);
+                return DefaultValue;
+            }
+        }
+
+        public static int SetData(string KeyName, int Value)
+        {
+            SetConfigValue(KeyName, @Value.ToString());
+            return Value;
+        }
+
+        public static string SetData(string KeyName, string Value)
+        {
+            SetConfigValue(KeyName, @Value);
+            return Value;
         }
 
         public static string[] LanguageFlags = new string[]
