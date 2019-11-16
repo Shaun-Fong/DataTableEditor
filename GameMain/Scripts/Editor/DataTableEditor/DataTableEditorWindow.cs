@@ -56,7 +56,7 @@ namespace GameFramework.DataTableTools
         /// </summary>
         private void CreateDataTable()
         {
-            
+
             OSPlatformWindow.OpenFileName openFileName = new OSPlatformWindow.OpenFileName();
             openFileName.structSize = Marshal.SizeOf(openFileName);
             openFileName.filter = DataTableEditorConfig.Filter;//文件格式过滤
@@ -264,7 +264,6 @@ namespace GameFramework.DataTableTools
             rows.Add(row5);
 
             FileStream file = new FileStream(Path.Combine(DataTableGenerator.DataTablePath, fileName + ".txt"), FileMode.CreateNew);
-            FileStream bytesFile = new FileStream(Path.Combine(DataTableGenerator.DataTablePath, fileName + ".bytes"), FileMode.CreateNew);
 
             string line = "";
             for (int i = 0; i < rows.Count; i++)
@@ -297,19 +296,15 @@ namespace GameFramework.DataTableTools
                 }
             }
             byte[] bts = System.Text.Encoding.Unicode.GetBytes(line);
+
             file.Write(bts, 0, bts.Length);
-            for (int i = 0; i < bts.Length; i++)
-            {
-                bytesFile.WriteByte(bts[i]);
-            }
             file.Flush();
-            bytesFile.Flush();
             file.Close();
-            bytesFile.Close();
             file.Dispose();
-            bytesFile.Dispose();
 
             OpenWindow(m_fileName, position);
+
+            AssetDatabase.Refresh();
         }
 
         /// <summary>
@@ -359,6 +354,8 @@ namespace GameFramework.DataTableTools
             bytesFile.Close();
             file.Dispose();
             bytesFile.Dispose();
+
+            AssetDatabase.Refresh();
         }
 
         /// <summary>
@@ -558,6 +555,7 @@ namespace GameFramework.DataTableTools
         private static string m_datatablePath = "";
         private static string m_CSharpCodePath = "";
         private static string m_CSharpCodeTemplateFileName = "";
+        private static string m_namespace = "";
 
         /// <summary>
         /// 打开设置窗口
@@ -579,8 +577,6 @@ namespace GameFramework.DataTableTools
 
         private void OnGUI()
         {
-
-
             GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
@@ -631,6 +627,7 @@ namespace GameFramework.DataTableTools
 
             GUILayout.EndHorizontal();
 
+
             GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
@@ -638,6 +635,14 @@ namespace GameFramework.DataTableTools
             GUILayout.Label(DataTableEditorConfig.GetConfig().Language, GUILayout.Width(120));
 
             DataTableEditorConfig.DefaultLanguage = EditorGUILayout.Popup(DataTableEditorConfig.DefaultLanguage, DataTableEditorConfig.LanguageFlags);
+
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10);
+
+            GUILayout.BeginHorizontal();
+
+            m_namespace = EditorGUILayout.TextField(DataTableEditorConfig.GetConfig().NameSpace, m_namespace);
 
             GUILayout.EndHorizontal();
 
@@ -694,6 +699,7 @@ namespace GameFramework.DataTableTools
             m_datatablePath = DataTableGenerator.DataTablePath;
             m_CSharpCodePath = DataTableGenerator.CSharpCodePath;
             m_CSharpCodeTemplateFileName = DataTableGenerator.CSharpCodeTemplateFileName;
+            m_namespace = DataTableGenerator.NameSpace;
         }
 
         /// <summary>
@@ -706,6 +712,10 @@ namespace GameFramework.DataTableTools
             DataTableProcessor.CommentRow = m_datatableCommentRow;
             DataTableProcessor.ContentStartRow = m_datatableCommentStartRow;
             DataTableProcessor.IdColumn = m_datatableIdColumn;
+            DataTableGenerator.DataTablePath = m_datatablePath;
+            DataTableGenerator.CSharpCodePath = m_CSharpCodePath;
+            DataTableGenerator.CSharpCodeTemplateFileName = m_CSharpCodeTemplateFileName;
+            DataTableGenerator.NameSpace = m_namespace;
         }
 
     }
