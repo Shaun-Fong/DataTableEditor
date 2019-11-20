@@ -5,10 +5,8 @@
  Datatable Editor For GameFrameWork 
  基于[GameFrameWork](https://gameframework.cn/)框架的数据表编辑器 
  
- TODO:
- 1)参数储存位置更改 
-  
- 2)自动扫描表格目录并添加进生成列表里 
+ TODO: 
+ 1)自动扫描表格目录并添加进生成列表里 
  
 # Feature 特性 
  

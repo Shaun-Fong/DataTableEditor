@@ -665,15 +665,15 @@ namespace GameFramework.DataTableTools
 
             if (GUILayout.Button(DataTableEditorConfig.GetConfig().Apply, GUILayout.Height(50)))
             {
-                this.Close();
                 DataTableEditorLaunchWindow.OpenWindow(this.position.position);
                 SetProcessorData();
+                this.Close();
             }
 
             if (GUILayout.Button(DataTableEditorConfig.GetConfig().Back, GUILayout.Height(50)))
             {
-                this.Close();
                 DataTableEditorLaunchWindow.OpenWindow(this.position.position);
+                this.Close();
             }
         }
 
@@ -682,15 +682,15 @@ namespace GameFramework.DataTableTools
         /// </summary>
         private static void GetProcessorData()
         {
-            m_datatableIDNameRow = DataTableProcessor.NameRow;
-            m_datatableIDTypeRow = DataTableProcessor.TypeRow;
-            m_datatableCommentRow = DataTableProcessor.CommentRow;
-            m_datatableCommentStartRow = DataTableProcessor.ContentStartRow;
-            m_datatableIdColumn = DataTableProcessor.IdColumn;
-            m_datatablePath = DataTableGenerator.DataTablePath;
-            m_CSharpCodePath = DataTableGenerator.CSharpCodePath;
-            m_CSharpCodeTemplateFileName = DataTableGenerator.CSharpCodeTemplateFileName;
-            m_namespace = DataTableGenerator.NameSpace;
+            m_datatableIDNameRow = DataTableEditorConfig.GetData("IDNameRow", DataTableProcessor.NameRow);
+            m_datatableIDTypeRow = DataTableEditorConfig.GetData("IDTypeRow", DataTableProcessor.TypeRow);
+            m_datatableCommentRow = DataTableEditorConfig.GetData("CommentRow", DataTableProcessor.CommentRow);
+            m_datatableCommentStartRow = DataTableEditorConfig.GetData("CommentStartRow", DataTableProcessor.ContentStartRow);
+            m_datatableIdColumn = DataTableEditorConfig.GetData("Column", DataTableProcessor.IdColumn);
+            m_datatablePath = DataTableEditorConfig.GetData("Path", DataTableGenerator.DataTablePath);
+            m_CSharpCodePath = DataTableEditorConfig.GetData("CSharpCodePath", DataTableGenerator.CSharpCodePath);
+            m_CSharpCodeTemplateFileName = DataTableEditorConfig.GetData("CSharpCodeTemplateFileName", DataTableGenerator.CSharpCodeTemplateFileName);
+            m_namespace = DataTableEditorConfig.GetData("Namespace", DataTableGenerator.NameSpace);
         }
 
         /// <summary>
@@ -698,17 +698,16 @@ namespace GameFramework.DataTableTools
         /// </summary>
         private static void SetProcessorData()
         {
-            DataTableProcessor.NameRow = m_datatableIDNameRow;
-            DataTableProcessor.TypeRow = m_datatableIDTypeRow;
-            DataTableProcessor.CommentRow = m_datatableCommentRow;
-            DataTableProcessor.ContentStartRow = m_datatableCommentStartRow;
-            DataTableProcessor.IdColumn = m_datatableIdColumn;
-            DataTableGenerator.DataTablePath = m_datatablePath;
-            DataTableGenerator.CSharpCodePath = m_CSharpCodePath;
-            DataTableGenerator.CSharpCodeTemplateFileName = m_CSharpCodeTemplateFileName;
-            DataTableGenerator.NameSpace = m_namespace;
+            DataTableProcessor.NameRow = DataTableEditorConfig.SetData("IDNameRow", m_datatableIDNameRow);
+            DataTableProcessor.TypeRow = DataTableEditorConfig.SetData("IDTypeRow", m_datatableIDTypeRow);
+            DataTableProcessor.CommentRow = DataTableEditorConfig.SetData("CommentRow", m_datatableCommentRow);
+            DataTableProcessor.ContentStartRow = DataTableEditorConfig.SetData("CommentStartRow", m_datatableCommentStartRow);
+            DataTableProcessor.IdColumn = DataTableEditorConfig.SetData("Column", m_datatableIdColumn);
+            DataTableGenerator.DataTablePath = DataTableEditorConfig.SetData("Path", m_datatablePath);
+            DataTableGenerator.CSharpCodePath = DataTableEditorConfig.SetData("CSharpCodePath", m_CSharpCodePath);
+            DataTableGenerator.CSharpCodeTemplateFileName = DataTableEditorConfig.SetData("CSharpCodeTemplateFileName", m_CSharpCodeTemplateFileName);
+            DataTableGenerator.NameSpace = DataTableEditorConfig.SetData("Namespace", m_namespace);
         }
-
     }
 
     /// <summary>
