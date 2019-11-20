@@ -5,6 +5,11 @@
  Datatable Editor For GameFrameWork 
  基于[GameFrameWork](https://gameframework.cn/)框架的数据表编辑器 
  
+ TODO:
+ 1)参数储存位置更改 
+  
+ 2)自动扫描表格目录并添加进生成列表里 
+ 
 # Feature 特性 
  
  New 新建数据表 
@@ -38,4 +43,3 @@
   
  5.Generate 
  记得改完表格进行生成。会自动生成需要的文件，如果有问题请直接提[issue](https://github.com/qtghost/DataTableEditor/issues/new) 
-  
