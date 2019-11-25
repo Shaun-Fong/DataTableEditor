@@ -451,6 +451,7 @@ namespace GameFramework.DataTableTools
         }
 
         private static Vector2 windowSize = new Vector2(300, 400);
+        private Vector2 scrollviewpos;
 
         public static ReorderableList m_datatableNames;
 
@@ -469,11 +470,12 @@ namespace GameFramework.DataTableTools
             window.ShowUtility();
         }
 
+        //绘制可序列表
         private void CheckNull()
         {
             if (m_datatableNames == null)
             {
-                m_datatableNames = new ReorderableList(DataTableEditorConfig.GetConfig().DataTableNamesList, typeof(DataTableName), true, false, true, true);
+                m_datatableNames = new ReorderableList(DataTableEditorConfig.GetConfig().DataTableNamesList, typeof(DataTableName), true, false, false, false);
                 m_datatableNames.elementHeight = 40;
                 m_datatableNames.drawElementCallback = (rectt, index, isActive, isFocused) =>
                 {
@@ -505,26 +507,104 @@ namespace GameFramework.DataTableTools
             }
         }
 
+        private void OnEnable()
+        {
+            if (!ScanDataTables())
+            {
+                this.Close();
+                DataTableEditorLaunchWindow.OpenWindow(this.position.position);
+            }
+        }
+
         private void OnGUI()
         {
 
             GUILayout.Space(10);
 
+            //滚动框
+            scrollviewpos = GUILayout.BeginScrollView(scrollviewpos);
             CheckNull();
             m_datatableNames.DoLayoutList();
+            GUILayout.EndScrollView();
 
             GUILayout.Space(10);
 
+            //生成按钮
             if (GUILayout.Button(DataTableEditorConfig.GetConfig().Generate, GUILayout.Height(50)))
             {
                 DataTableGeneratorMenu.GenerateDataTables(DataTableEditorConfig.GetConfig().DataTableNamesList);
             }
 
+            //返回按钮
             if (GUILayout.Button(DataTableEditorConfig.GetConfig().Back, GUILayout.Height(50)))
             {
                 this.Close();
                 DataTableEditorLaunchWindow.OpenWindow(this.position.position);
             }
+
+            if (GUI.changed)
+            {
+                EditorUtility.SetDirty(DataTableEditorConfig.GetConfig());
+            }
+        }
+
+        /// <summary>
+        /// 扫描目录文件
+        /// </summary>
+        /// <returns></returns>
+        private bool ScanDataTables()
+        {
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(Application.dataPath.Replace("/Assets", "") + "/" + DataTableEditorConfig.GetConfig().Data_Path);
+                FileInfo[] files = dir.GetFiles("*.txt");
+                if (CheckDifferent(DataTableEditorConfig.GetConfig().DataTableNamesList, files))
+                {
+                    DataTableEditorConfig.GetConfig().DataTableNamesList = new List<DataTableName>();
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        DataTableName temp = new DataTableName();
+                        temp.Name = files[i].Name.Replace(".txt", "");
+                        DataTableEditorConfig.GetConfig().DataTableNamesList.Add(temp);
+                    }
+                }
+                m_datatableNames = null;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Debug.LogError("Path Directory Not Found!");
+                return false;
+            }
+
+
+            return true;
+        }
+
+        /// <summary>
+        /// 检查文件是否有更改
+        /// </summary>
+        /// <param name="list">列表</param>
+        /// <param name="files">文件信息</param>
+        /// <returns></returns>
+        private bool CheckDifferent(List<DataTableName> list, FileInfo[] files)
+        {
+            if (list.Count != files.Length)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (!list.Exists((x) =>
+                {
+                    return x.Name == files[i].Name.Replace(".txt", "") ? true : false;//是否存在名字不同的txt文件
+                }))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }
@@ -675,6 +755,11 @@ namespace GameFramework.DataTableTools
                 DataTableEditorLaunchWindow.OpenWindow(this.position.position);
                 this.Close();
             }
+
+            if (GUI.changed)
+            {
+                EditorUtility.SetDirty(DataTableEditorConfig.GetConfig());
+            }
         }
 
         /// <summary>
@@ -682,15 +767,15 @@ namespace GameFramework.DataTableTools
         /// </summary>
         private static void GetProcessorData()
         {
-            m_datatableIDNameRow = DataTableEditorConfig.GetData("IDNameRow", DataTableProcessor.NameRow);
-            m_datatableIDTypeRow = DataTableEditorConfig.GetData("IDTypeRow", DataTableProcessor.TypeRow);
-            m_datatableCommentRow = DataTableEditorConfig.GetData("CommentRow", DataTableProcessor.CommentRow);
-            m_datatableCommentStartRow = DataTableEditorConfig.GetData("CommentStartRow", DataTableProcessor.ContentStartRow);
-            m_datatableIdColumn = DataTableEditorConfig.GetData("Column", DataTableProcessor.IdColumn);
-            m_datatablePath = DataTableEditorConfig.GetData("Path", DataTableGenerator.DataTablePath);
-            m_CSharpCodePath = DataTableEditorConfig.GetData("CSharpCodePath", DataTableGenerator.CSharpCodePath);
-            m_CSharpCodeTemplateFileName = DataTableEditorConfig.GetData("CSharpCodeTemplateFileName", DataTableGenerator.CSharpCodeTemplateFileName);
-            m_namespace = DataTableEditorConfig.GetData("Namespace", DataTableGenerator.NameSpace);
+            m_datatableIDNameRow = DataTableEditorConfig.GetConfig().Data_IDameRow;
+            m_datatableIDTypeRow = DataTableEditorConfig.GetConfig().Data_IDTypeRow;
+            m_datatableCommentRow = DataTableEditorConfig.GetConfig().Data_IDCommentRow;
+            m_datatableCommentStartRow = DataTableEditorConfig.GetConfig().Data_IDCommentStartRow;
+            m_datatableIdColumn = DataTableEditorConfig.GetConfig().Data_IDColumn;
+            m_datatablePath = DataTableEditorConfig.GetConfig().Data_Path;
+            m_CSharpCodePath = DataTableEditorConfig.GetConfig().Data_CSharpCodePath;
+            m_CSharpCodeTemplateFileName = DataTableEditorConfig.GetConfig().Data_CSharpCodeTemplateFileName;
+            m_namespace = DataTableEditorConfig.GetConfig().Data_NameSpace;
         }
 
         /// <summary>
@@ -698,15 +783,15 @@ namespace GameFramework.DataTableTools
         /// </summary>
         private static void SetProcessorData()
         {
-            DataTableProcessor.NameRow = DataTableEditorConfig.SetData("IDNameRow", m_datatableIDNameRow);
-            DataTableProcessor.TypeRow = DataTableEditorConfig.SetData("IDTypeRow", m_datatableIDTypeRow);
-            DataTableProcessor.CommentRow = DataTableEditorConfig.SetData("CommentRow", m_datatableCommentRow);
-            DataTableProcessor.ContentStartRow = DataTableEditorConfig.SetData("CommentStartRow", m_datatableCommentStartRow);
-            DataTableProcessor.IdColumn = DataTableEditorConfig.SetData("Column", m_datatableIdColumn);
-            DataTableGenerator.DataTablePath = DataTableEditorConfig.SetData("Path", m_datatablePath);
-            DataTableGenerator.CSharpCodePath = DataTableEditorConfig.SetData("CSharpCodePath", m_CSharpCodePath);
-            DataTableGenerator.CSharpCodeTemplateFileName = DataTableEditorConfig.SetData("CSharpCodeTemplateFileName", m_CSharpCodeTemplateFileName);
-            DataTableGenerator.NameSpace = DataTableEditorConfig.SetData("Namespace", m_namespace);
+            DataTableEditorConfig.GetConfig().Data_IDameRow = m_datatableIDNameRow;
+            DataTableEditorConfig.GetConfig().Data_IDTypeRow = m_datatableIDTypeRow;
+            DataTableEditorConfig.GetConfig().Data_IDCommentRow = m_datatableCommentRow;
+            DataTableEditorConfig.GetConfig().Data_IDCommentStartRow = m_datatableCommentStartRow;
+            DataTableEditorConfig.GetConfig().Data_IDColumn = m_datatableIdColumn;
+            DataTableEditorConfig.GetConfig().Data_Path = m_datatablePath;
+            DataTableEditorConfig.GetConfig().Data_CSharpCodePath = m_CSharpCodePath;
+            DataTableEditorConfig.GetConfig().Data_CSharpCodeTemplateFileName = m_CSharpCodeTemplateFileName;
+            DataTableEditorConfig.GetConfig().Data_NameSpace = m_namespace;
         }
     }
 
