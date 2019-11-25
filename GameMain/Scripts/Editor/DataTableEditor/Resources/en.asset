@@ -26,7 +26,7 @@ MonoBehaviour:
   RemoveRow: RemoveRow
   Generate: Generate
   NameSpace: NameSpace
-  Verision: 1.1.2
+  Verision: 1.2.1
   IDNameRow: ID Name Row
   IDTypeRow: ID Type Row
   CommentRow: Comment Row

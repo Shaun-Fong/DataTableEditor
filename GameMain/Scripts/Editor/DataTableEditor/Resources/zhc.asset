@@ -26,7 +26,7 @@ MonoBehaviour:
   RemoveRow: "\u79FB\u9664\u6700\u540E\u4E00\u884C"
   Generate: "\u751F\u6210"
   NameSpace: "\u547D\u540D\u7A7A\u95F4"
-  Verision: 1.1.2
+  Verision: 1.2.1
   IDNameRow: "ID\u540D\u79F0\u884C\u6570"
   IDTypeRow: "ID\u7C7B\u578B\u884C\u6570"
   CommentRow: "\u6CE8\u91CA\u884C\u6570"

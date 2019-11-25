@@ -532,6 +532,7 @@ namespace GameFramework.DataTableTools
             //生成按钮
             if (GUILayout.Button(DataTableEditorConfig.GetConfig().Generate, GUILayout.Height(50)))
             {
+                GetData();
                 DataTableGeneratorMenu.GenerateDataTables(DataTableEditorConfig.GetConfig().DataTableNamesList);
             }
 
@@ -605,6 +606,19 @@ namespace GameFramework.DataTableTools
             }
 
             return false;
+        }
+
+        private void GetData()
+        {
+            DataTableProcessor.NameRow = DataTableEditorConfig.GetConfig().Data_IDameRow;
+            DataTableProcessor.TypeRow = DataTableEditorConfig.GetConfig().Data_IDTypeRow;
+            DataTableProcessor.CommentRow = DataTableEditorConfig.GetConfig().Data_IDCommentRow;
+            DataTableProcessor.CommentStartRow = DataTableEditorConfig.GetConfig().Data_IDCommentStartRow;
+            DataTableProcessor.IdColumn = DataTableEditorConfig.GetConfig().Data_IDColumn;
+            DataTableGenerator.DataTablePath = DataTableEditorConfig.GetConfig().Data_Path;
+            DataTableGenerator.CSharpCodePath = DataTableEditorConfig.GetConfig().Data_CSharpCodePath;
+            DataTableGenerator.CSharpCodeTemplateFileName = DataTableEditorConfig.GetConfig().Data_CSharpCodeTemplateFileName;
+            DataTableGenerator.NameSpace = DataTableEditorConfig.GetConfig().Data_NameSpace;
         }
 
     }
@@ -792,6 +806,7 @@ namespace GameFramework.DataTableTools
             DataTableEditorConfig.GetConfig().Data_CSharpCodePath = m_CSharpCodePath;
             DataTableEditorConfig.GetConfig().Data_CSharpCodeTemplateFileName = m_CSharpCodeTemplateFileName;
             DataTableEditorConfig.GetConfig().Data_NameSpace = m_namespace;
+
         }
     }
 
