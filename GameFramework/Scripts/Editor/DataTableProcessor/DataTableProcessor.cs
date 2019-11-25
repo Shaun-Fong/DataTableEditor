@@ -59,7 +59,7 @@ namespace UnityGameFramework.Editor.DataTableTools
         /// <summary>
         /// 数据表内容开始行数
         /// </summary>
-        public static int ContentStartRow = 4;
+        public static int CommentStartRow = 4;
 
         /// <summary>
         /// ID开始的列数
@@ -127,9 +127,9 @@ namespace UnityGameFramework.Editor.DataTableTools
                 throw new GameFrameworkException(Utility.Text.Format("Type row '{0}' is invalid.", TypeRow.ToString()));
             }
 
-            if (ContentStartRow < 0)
+            if (CommentStartRow < 0)
             {
-                throw new GameFrameworkException(Utility.Text.Format("Content start row '{0}' is invalid.", ContentStartRow.ToString()));
+                throw new GameFrameworkException(Utility.Text.Format("Content start row '{0}' is invalid.", CommentStartRow.ToString()));
             }
 
             if (IdColumn < 0)
@@ -157,9 +157,9 @@ namespace UnityGameFramework.Editor.DataTableTools
                 throw new GameFrameworkException(Utility.Text.Format("Comment row '{0}' >= raw row count '{1}' is not allow.", CommentRow.ToString(), rawRowCount.ToString()));
             }
 
-            if (ContentStartRow > rawRowCount)
+            if (CommentStartRow > rawRowCount)
             {
-                throw new GameFrameworkException(Utility.Text.Format("Content start row '{0}' > raw row count '{1}' is not allow.", ContentStartRow.ToString(), rawRowCount.ToString()));
+                throw new GameFrameworkException(Utility.Text.Format("Content start row '{0}' > raw row count '{1}' is not allow.", CommentStartRow.ToString(), rawRowCount.ToString()));
             }
 
             if (IdColumn >= rawColumnCount)
@@ -328,7 +328,7 @@ namespace UnityGameFramework.Editor.DataTableTools
                 {
                     using (BinaryWriter stream = new BinaryWriter(fileStream, encoding))
                     {
-                        for (int i = ContentStartRow; i < RawRowCount; i++)
+                        for (int i = CommentStartRow; i < RawRowCount; i++)
                         {
                             if (IsCommentRow(i))
                             {
