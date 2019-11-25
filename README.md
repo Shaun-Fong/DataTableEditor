@@ -3,12 +3,9 @@
  ![Data Table Editor](ExampleImage/Editor.gif) 
  
  Datatable Editor For GameFrameWork 
- 基于[GameFrameWork](https://gameframework.cn/)框架的数据表编辑器 
- 
- TODO: 
- 1)自动扫描表格目录并添加进生成列表里 
   
- 2)把设置参数存进config里，生成前重新取一次数据
+ 一个[GameFrameWork](https://gameframework.cn/)框架的数据表快速编辑器 
+ 
  
 # Feature 特性 
  
@@ -43,3 +40,12 @@
   
  5.Generate 
  记得改完表格进行生成。会自动生成需要的文件，如果有问题请直接提[issue](https://github.com/qtghost/DataTableEditor/issues/new) 
+ 
+# TO DO
+  
+ ***~~1.自动扫描~~** 
+  
+ ***~~2.移动数据位置~~** 
+  
+ 3.使该工具脱离框架一样可以使用 
+ 

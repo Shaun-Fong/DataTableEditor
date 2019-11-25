@@ -19,7 +19,7 @@ namespace GameFramework.DataTableTools
     public class DataTableEditorConfig : ScriptableObject
     {
 
-
+        [Header("Label")]
         public string WindowTitle = "Data Table Editor";
         public string MainTitle = "Data Table Editor";
         public string SubTitle = "GameFrameWork";
@@ -47,6 +47,17 @@ namespace GameFramework.DataTableTools
         public string CSharpCodePath = "CSharpCode Path";
         public string CSharpCodeTemplateFileName = "CSharpCode Path";
 
+        [Header("Data")]
+        public int Data_IDameRow = 1;
+        public int Data_IDTypeRow = 2;
+        public int Data_IDCommentRow = 3;
+        public int Data_IDCommentStartRow = 4;
+        public int Data_IDColumn = 1;
+        public string Data_Path = "Assets/GameMain/DataTables";
+        public string Data_CSharpCodePath = "Assets/GameMain/Scripts/DataTable";
+        public string Data_CSharpCodeTemplateFileName = "Assets/GameMain/Configs/DataTableCodeTemplate.txt";
+        public string Data_NameSpace = "Game";
+
         public const string Filter = "txt文件(*.txt)\0*.txt";
 
         private static DataTableEditorConfig config;
@@ -54,11 +65,17 @@ namespace GameFramework.DataTableTools
         {
             get
             {
-                return int.Parse(GetData("Language", 0).ToString());
+                string value = EditorUserSettings.GetConfigValue("DataTableEditor_Language");
+                if (string.IsNullOrEmpty(value))
+                {
+                    DefaultLanguage = 1;
+                    return 1;
+                }
+                return int.Parse(EditorUserSettings.GetConfigValue("DataTableEditor_Language"));
             }
             set
             {
-                SetData("Language", value.ToString());
+                EditorUserSettings.SetConfigValue("DataTableEditor_Language", value.ToString());
             }
         }
         public static DataTableEditorConfig GetConfig()
@@ -72,60 +89,6 @@ namespace GameFramework.DataTableTools
             return config;
         }
 
-        private static void SetConfigValue(string KeyName,string Value)
-        {
-            EditorUserSettings.SetConfigValue("DataTableEditor_" + KeyName, Value);
-        }
-
-        private static string GetConfigValue(string KeyName)
-        {
-            return EditorUserSettings.GetConfigValue("DataTableEditor_" + KeyName);
-        }
-
-        private static bool HasConfigValue(string KeyName)
-        {
-            return !string.IsNullOrEmpty(GetConfigValue(KeyName));
-        }
-
-
-        public static int GetData(string KeyName, int DefaultValue)
-        {
-            if (HasConfigValue(KeyName))
-            {
-                return int.Parse(GetConfigValue(KeyName));
-            }
-            else
-            {
-                SetConfigValue(KeyName, @DefaultValue.ToString());
-                return DefaultValue;
-            }
-        }
-
-        public static string GetData(string KeyName, string DefaultValue)
-        {
-            if (HasConfigValue(KeyName))
-            {
-                return GetConfigValue(KeyName);
-            }
-            else
-            {
-                SetConfigValue(KeyName, @DefaultValue);
-                return DefaultValue;
-            }
-        }
-
-        public static int SetData(string KeyName, int Value)
-        {
-            SetConfigValue(KeyName, @Value.ToString());
-            return Value;
-        }
-
-        public static string SetData(string KeyName, string Value)
-        {
-            SetConfigValue(KeyName, @Value);
-            return Value;
-        }
-
         public static string[] LanguageFlags = new string[]
         {
             "EN",
@@ -133,13 +96,18 @@ namespace GameFramework.DataTableTools
         };
 
 
-        private List<DataTableGenerateWindow.DataTableName> m_dataTableNames = new List<DataTableGenerateWindow.DataTableName>();
+        public List<DataTableGenerateWindow.DataTableName> m_dataTableNames = new List<DataTableGenerateWindow.DataTableName>();
         public List<DataTableGenerateWindow.DataTableName> DataTableNamesList
         {
             get
             {
                 config = Resources.Load<DataTableEditorConfig>(LanguageFlags[0]);
                 return config.m_dataTableNames;
+            }
+            set
+            {
+                config = Resources.Load<DataTableEditorConfig>(LanguageFlags[0]);
+                config.m_dataTableNames = value;
             }
         }
     }

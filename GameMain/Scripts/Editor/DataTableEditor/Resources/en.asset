@@ -25,13 +25,24 @@ MonoBehaviour:
   AddRow: AddRow
   RemoveRow: RemoveRow
   Generate: Generate
-  Verision: 0.0.1
+  NameSpace: NameSpace
+  Verision: 1.2.1
   IDNameRow: ID Name Row
   IDTypeRow: ID Type Row
   CommentRow: Comment Row
-  CommentStartRow: Comment Start Row
+  ContentStartRow: Content Start Row
   IDColumn: Id Column
   Language: Language
   DataTablePath: DataTable Path
   CSharpCodePath: CSharpCode Path
   CSharpCodeTemplateFileName: CSharpCodeFile Path
+  Data_IDameRow: 1
+  Data_IDTypeRow: 2
+  Data_IDCommentRow: 3
+  Data_IDCommentStartRow: 4
+  Data_IDColumn: 1
+  Data_Path: Assets/GameMain/DataTables
+  Data_CSharpCodePath: Assets/GameMain/Scripts/DataTable
+  Data_CSharpCodeTemplateFileName: Assets/GameMain/Configs/DataTableCodeTemplate.txt
+  Data_NameSpace: StarForce
+  m_dataTableNames: []

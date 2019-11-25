@@ -26,7 +26,7 @@ MonoBehaviour:
   RemoveRow: "\u79FB\u9664\u6700\u540E\u4E00\u884C"
   Generate: "\u751F\u6210"
   NameSpace: "\u547D\u540D\u7A7A\u95F4"
-  Verision: 0.0.1
+  Verision: 1.2.1
   IDNameRow: "ID\u540D\u79F0\u884C\u6570"
   IDTypeRow: "ID\u7C7B\u578B\u884C\u6570"
   CommentRow: "\u6CE8\u91CA\u884C\u6570"
@@ -36,3 +36,13 @@ MonoBehaviour:
   DataTablePath: "\u6570\u636E\u8868\u8DEF\u5F84"
   CSharpCodePath: "C#\u751F\u6210\u8DEF\u5F84"
   CSharpCodeTemplateFileName: "C#\u6A21\u677F\u6587\u4EF6\u8DEF\u5F84"
+  Data_IDameRow: 1
+  Data_IDTypeRow: 2
+  Data_IDCommentRow: 3
+  Data_IDCommentStartRow: 4
+  Data_IDColumn: 1
+  Data_Path: Assets/GameMain/DataTables
+  Data_CSharpCodePath: Assets/GameMain/Scripts/DataTable
+  Data_CSharpCodeTemplateFileName: Assets/GameMain/Configs/DataTableCodeTemplate.txt
+  Data_NameSpace: Game
+  m_dataTableNames: []
