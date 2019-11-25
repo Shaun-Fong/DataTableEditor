@@ -3,9 +3,11 @@
  ![Data Table Editor](ExampleImage/Editor.gif) 
  
  Datatable Editor For GameFrameWork 
- 基于[GameFrameWork](https://gameframework.cn/)框架的数据表编辑器 
+  
+ 一个[GameFrameWork](https://gameframework.cn/)框架的数据表快速编辑器 
  
- TODO: 
+ TODO:  
+  
  1)自动扫描表格目录并添加进生成列表里 
   
  2)把设置参数存进config里，生成前重新取一次数据
