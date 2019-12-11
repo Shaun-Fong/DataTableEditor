@@ -65,6 +65,12 @@ namespace GameFramework.DataTableTools
         {
             get
             {
+                string value = EditorUserSettings.GetConfigValue("DataTableEditor_Language");
+                if (string.IsNullOrEmpty(value))
+                {
+                    DefaultLanguage = 1;
+                    return 1;
+                }
                 return int.Parse(EditorUserSettings.GetConfigValue("DataTableEditor_Language"));
             }
             set
