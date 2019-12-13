@@ -40,3 +40,8 @@
   
  5.Generate 
  记得改完表格进行生成。会自动生成需要的文件，如果有问题请直接提[issue](https://github.com/qtghost/DataTableEditor/issues/new) 
+ 
+# TO DO
+ ***~~1.自动扫描~~** 
+ ***~~2.移动数据位置~~** 
+ 3.使该工具脱离框架 
