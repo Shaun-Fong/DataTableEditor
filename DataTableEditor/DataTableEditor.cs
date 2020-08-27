@@ -159,7 +159,7 @@ namespace DataTableEditor
         public static float ButtonHeight = 50;
         public static DataTableEditor Instance;
 
-        [MenuItem("Tools/表格编辑器", priority = 2)]
+        [MenuItem("Tools/表格编辑器 &1", priority = 2)]
         public static void OpenWindow()
         {
             if (DataTableEditingWindow.Instance != null)
@@ -208,7 +208,8 @@ namespace DataTableEditor
         public static string FilePath { get; private set; }
         public static int LightMode = 0;
         public string Theme = "LODCameraLine";
-
+        private Vector2 m_scrollViewPos;
+        
         public static void OpenWindow(string path)
         {
             FilePath = path;
@@ -243,6 +244,9 @@ namespace DataTableEditor
 
         private void OnGUI()
         {
+            
+            m_scrollViewPos = GUILayout.BeginScrollView(m_scrollViewPos);
+            
             if (RowDatas == null || RowDatas.Count == 0)
             {
                 Close();
@@ -351,6 +355,8 @@ namespace DataTableEditor
             }
 
             reorderableList.DoLayoutList();
+            
+            GUILayout.EndScrollView();
         }
 
         private void OnDisable()
