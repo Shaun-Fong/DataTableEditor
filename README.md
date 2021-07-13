@@ -6,3 +6,5 @@
  
 与[Game Framework框架](https://gameframework.cn/)搭配食用更佳
  
+## 贡献者
+[FingerCaster](https://github.com/FingerCaster)
