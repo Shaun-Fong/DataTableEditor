@@ -100,7 +100,7 @@ namespace DataTableEditor
                 }
             }
 
-            EditorUtility.DisplayDialog("提示", "保存成功!", "ojbk");
+            //EditorUtility.DisplayDialog("提示", "保存成功!", "ojbk");
 
             AssetDatabase.Refresh();
 
@@ -126,7 +126,7 @@ namespace DataTableEditor
             {
                 while (sr.EndOfStream == false)
                 {
-                    UTF8Encoding utf8 = new UTF8Encoding();
+                   // UTF8Encoding utf8 = new UTF8Encoding();
                     string line = sr.ReadLine();
                     string[] splited = line.Split('\t');
                     DataTableRowData row = new DataTableRowData();
@@ -144,6 +144,7 @@ namespace DataTableEditor
         }
     }
 
+    [Serializable]
     public class DataTableRowData
     {
         public List<string> Data { get; set; }
@@ -162,21 +163,19 @@ namespace DataTableEditor
         [MenuItem("Tools/表格编辑器 &1", priority = 2)]
         public static void OpenWindow()
         {
-            if (DataTableEditingWindow.Instance != null)
-            {
-                DataTableEditingWindow.Instance.Close();
-            }
-
             if (Instance != null)
             {
                 Instance.Close();
                 return;
             }
 
+#if UNITY_2019_1_OR_NEWER
             Instance = DataTableEditor.CreateWindow<DataTableEditor>("数据表编辑器");
+#endif
+            Instance = EditorWindowUtility.CreateWindow<DataTableEditor>("数据表编辑器");
             Instance.Show();
         }
-
+     
         private void OnGUI()
         {
             if (GUILayout.Button("新建", GUILayout.Height(ButtonHeight)))
@@ -188,29 +187,56 @@ namespace DataTableEditor
 
         private void ButtonNew()
         {
-            DataTableEditingWindow.OpenWindow(DataTableUtility.NewDataTableFile());
+            var m_DataTableEditingWindow = new ZHONGJ();
+            m_DataTableEditingWindow.SetData(DataTableUtility.NewDataTableFile());
             this.Close();
         }
 
         private void ButtonLoad()
         {
-            DataTableEditingWindow.OpenWindow(EditorUtility.OpenFilePanel("加载数据表格文件", "", "txt"));
+            var m_DataTableEditingWindow = new ZHONGJ();
+            m_DataTableEditingWindow.SetData(EditorUtility.OpenFilePanel("加载数据表格文件", Application.dataPath, "txt"));
             this.Close();
+        }
+    }
+
+    public class ZHONGJ
+    {
+        public DataTableEditingWindow Instance { get; private set; }
+
+        public void SetData(string path)
+        {
+            FileInfo fileInfo = new FileInfo(path);
+            // Instance = DataTableEditingWindow.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
+#if UNITY_2019_1_OR_NEWER
+            Instance = DataTableEditor.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
+#endif
+            Instance = EditorWindowUtility.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
+            Instance.OpenWindow(path);
+            Instance.Show();
         }
     }
 
     public class DataTableEditingWindow : EditorWindow
     {
-        public static DataTableEditingWindow Instance { get; private set; }
-        public static List<DataTableRowData> RowDatas { get; private set; }
-        private static List<DataTableRowData> RowDatasTemp;
+        public DataTableEditingWindow Instance { get; private set; }
+
+        public List<DataTableRowData> RowDatas { get; private set; }
+
+        private List<DataTableRowData> RowDatasTemp;
+
         private ReorderableList reorderableList;
-        public static string FilePath { get; private set; }
-        public static int LightMode = 0;
+
+        public string FilePath { get; private set; }
+
+        public int LightMode = 0;
+
         public string Theme = "LODCameraLine";
+
         private Vector2 m_scrollViewPos;
         
-        public static void OpenWindow(string path)
+        
+        public void OpenWindow(string path)
         {
             FilePath = path;
             RowDatas = DataTableUtility.LoadDataTableFile(FilePath);
@@ -235,18 +261,13 @@ namespace DataTableEditor
             if (RowDatas == null)
                 return;
 
-            FileInfo fileInfo = new FileInfo(path);
-            Instance = DataTableEditingWindow.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
-            Instance.Show();
-
             LightMode = EditorPrefs.GetInt("DataTableEditor_" + Application.productName + "_LightMode", 0);
         }
 
         private void OnGUI()
         {
-            
             m_scrollViewPos = GUILayout.BeginScrollView(m_scrollViewPos);
-            
+
             if (RowDatas == null || RowDatas.Count == 0)
             {
                 Close();
@@ -274,14 +295,14 @@ namespace DataTableEditor
                     for (int i = 0; i < RowDatas[index].Data.Count; i++)
                     {
                         rect.width =
-                            (Instance.position.width - 20) /
+                            (this.position.width - 20) /
                             RowDatas[index].Data.Count;
 
                         rect.x = rect.width * i + 20;
 
                         RowDatas[index].Data[i] =
                             EditorGUI.TextField(rect, "", RowDatas[index].Data[i],
-                                Instance.Theme);
+                                this.Theme);
                     }
                 };
 
@@ -296,7 +317,7 @@ namespace DataTableEditor
                         {
                             RowDatas.Add(new DataTableRowData()
                             {
-                                Data = new List<string>() { "", "", "", "" }
+                                Data = new List<string>() {"", "", "", ""}
                             });
                         }
                         else
@@ -355,7 +376,7 @@ namespace DataTableEditor
             }
 
             reorderableList.DoLayoutList();
-            
+
             GUILayout.EndScrollView();
         }
 
@@ -377,7 +398,7 @@ namespace DataTableEditor
         /// </summary>
         private void CheckColumnCount()
         {
-            if (RowDatas.Count == 0)
+            if (RowDatas == null || RowDatas.Count == 0)
                 return;
 
             int count = RowDatas[0].Data.Count;
@@ -401,6 +422,8 @@ namespace DataTableEditor
         /// <returns></returns>
         private bool CheckDirty()
         {
+            Debug.Log("执行清理");
+
             if (RowDatasTemp.Count != RowDatas.Count)
                 return true;
 
