@@ -126,7 +126,7 @@ namespace DataTableEditor
             {
                 while (sr.EndOfStream == false)
                 {
-                    UTF8Encoding utf8 = new UTF8Encoding();
+                    //UTF8Encoding utf8 = new UTF8Encoding();
                     string line = sr.ReadLine();
                     string[] splited = line.Split('\t');
                     DataTableRowData row = new DataTableRowData();
@@ -173,7 +173,10 @@ namespace DataTableEditor
                 return;
             }
 
+#if UNITY_2019_1_OR_NEWER
             Instance = DataTableEditor.CreateWindow<DataTableEditor>("数据表编辑器");
+#endif
+            Instance = EditorWindowUtility.CreateWindow<DataTableEditor>("数据表编辑器");
             Instance.Show();
         }
 
@@ -236,7 +239,10 @@ namespace DataTableEditor
                 return;
 
             FileInfo fileInfo = new FileInfo(path);
-            Instance = DataTableEditingWindow.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
+#if UNITY_2019_1_OR_NEWER
+            Instance = DataTableEditor.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
+#endif
+            Instance = EditorWindowUtility.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
             Instance.Show();
 
             LightMode = EditorPrefs.GetInt("DataTableEditor_" + Application.productName + "_LightMode", 0);
