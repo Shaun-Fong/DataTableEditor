@@ -61,12 +61,12 @@ namespace DataTableEditor
         /// 新建表格
         /// </summary>
         /// <returns>新建表格文件路径</returns>
-        public static string NewDataTableFile()
+        public static string NewDataTableFile(Encoding encoding)
         {
             string path = EditorUtility.SaveFilePanel("保存文件", "", "template.txt", "txt");
 
             if (string.IsNullOrEmpty(path) == false)
-                SaveDataTableFile(path, DataTableTemplate);
+                SaveDataTableFile(path, DataTableTemplate,encoding);
 
             return path;
         }
@@ -77,9 +77,9 @@ namespace DataTableEditor
         /// <param name="path">保存文件路径</param>
         /// <param name="data">数据信息</param>
         /// <returns>保存是否成功</returns>
-        public static bool SaveDataTableFile(string path, List<DataTableRowData> data)
+        public static bool SaveDataTableFile(string path, List<DataTableRowData> data,Encoding encoding)
         {
-            using (StreamWriter sw = new StreamWriter(path, false, new UnicodeEncoding()))
+            using (StreamWriter sw = new StreamWriter(path, false, encoding))
             {
                 for (int i = 0; i < data.Count; i++)
                 {
@@ -112,7 +112,7 @@ namespace DataTableEditor
         /// </summary>
         /// <param name="path">表格文件路径</param>
         /// <returns>保存的信息数据</returns>
-        public static List<DataTableRowData> LoadDataTableFile(string path)
+        public static List<DataTableRowData> LoadDataTableFile(string path,Encoding encoding)
         {
             if (File.Exists(path) == false)
             {
@@ -122,11 +122,11 @@ namespace DataTableEditor
 
             List<DataTableRowData> data = new List<DataTableRowData>();
 
-            using (StreamReader sr = new StreamReader(path, new UnicodeEncoding()))
+            using (StreamReader sr = new StreamReader(path, encoding))
             {
                 while (sr.EndOfStream == false)
                 {
-                   // UTF8Encoding utf8 = new UTF8Encoding();
+                    // UTF8Encoding utf8 = new UTF8Encoding();
                     string line = sr.ReadLine();
                     string[] splited = line.Split('\t');
                     DataTableRowData row = new DataTableRowData();
@@ -159,6 +159,9 @@ namespace DataTableEditor
     {
         public static float ButtonHeight = 50;
         public static DataTableEditor Instance;
+        [SerializeField] private string encodingString = "UTF-8";
+        private Encoding encoding;
+        private bool isValidEncode;
 
         [MenuItem("Tools/表格编辑器 &1", priority = 2)]
         public static void OpenWindow()
@@ -171,13 +174,41 @@ namespace DataTableEditor
 
 #if UNITY_2019_1_OR_NEWER
             Instance = DataTableEditor.CreateWindow<DataTableEditor>("数据表编辑器");
-#endif
+#else
             Instance = EditorWindowUtility.CreateWindow<DataTableEditor>("数据表编辑器");
+#endif
+            try
+            {
+                Instance.encoding = Encoding.GetEncoding(Instance.encodingString);
+
+                Instance.isValidEncode = true;
+            }
+            catch (Exception e)
+            {
+                Instance.isValidEncode = false;
+            }
+
             Instance.Show();
         }
-     
+
         private void OnGUI()
         {
+            encodingString = EditorGUILayout.TextField("数据表编码", encodingString);
+            try
+            {
+                encoding = Encoding.GetEncoding(encodingString);
+                isValidEncode = true;
+            }
+            catch (Exception e)
+            {
+                isValidEncode = false;
+            }
+
+            if (!isValidEncode)
+            {
+                return;
+            }
+
             if (GUILayout.Button("新建", GUILayout.Height(ButtonHeight)))
                 ButtonNew();
 
@@ -188,15 +219,23 @@ namespace DataTableEditor
         private void ButtonNew()
         {
             var m_DataTableEditingWindow = new ZHONGJ();
-            m_DataTableEditingWindow.SetData(DataTableUtility.NewDataTableFile());
-            this.Close();
+            m_DataTableEditingWindow.SetData(DataTableUtility.NewDataTableFile(encoding),encoding);
+            //this.Close();
         }
 
         private void ButtonLoad()
         {
             var m_DataTableEditingWindow = new ZHONGJ();
-            m_DataTableEditingWindow.SetData(EditorUtility.OpenFilePanel("加载数据表格文件", Application.dataPath, "txt"));
-            this.Close();
+            string filePath = EditorUtility.OpenFilePanel("加载数据表格文件", Application.dataPath, "txt");
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                m_DataTableEditingWindow.SetData(filePath,encoding);
+                // Instance.Close();
+            }
+            else
+            {
+                Debug.Log("取消选择数据表");
+            }
         }
     }
 
@@ -204,15 +243,16 @@ namespace DataTableEditor
     {
         public DataTableEditingWindow Instance { get; private set; }
 
-        public void SetData(string path)
+        public void SetData(string path,Encoding encoding)
         {
             FileInfo fileInfo = new FileInfo(path);
             // Instance = DataTableEditingWindow.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
 #if UNITY_2019_1_OR_NEWER
             Instance = DataTableEditor.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
-#endif
+#else
             Instance = EditorWindowUtility.CreateWindow<DataTableEditingWindow>(fileInfo.Name);
-            Instance.OpenWindow(path);
+#endif
+            Instance.OpenWindow(path,encoding);
             Instance.Show();
         }
     }
@@ -224,9 +264,11 @@ namespace DataTableEditor
         public List<DataTableRowData> RowDatas { get; private set; }
 
         private List<DataTableRowData> RowDatasTemp;
-
+#if UNITY_2019_1_OR_NEWER
+        private UnityInternalBridge.ReorderableList reorderableList;
+#else
         private ReorderableList reorderableList;
-
+#endif
         public string FilePath { get; private set; }
 
         public int LightMode = 0;
@@ -234,12 +276,14 @@ namespace DataTableEditor
         public string Theme = "LODCameraLine";
 
         private Vector2 m_scrollViewPos;
-        
-        
-        public void OpenWindow(string path)
+
+        private Encoding m_encoding;
+
+        public void OpenWindow(string path,Encoding encoding)
         {
+            m_encoding = encoding;
             FilePath = path;
-            RowDatas = DataTableUtility.LoadDataTableFile(FilePath);
+            RowDatas = DataTableUtility.LoadDataTableFile(FilePath,m_encoding);
 
             if (RowDatas == null)
                 return;
@@ -271,6 +315,7 @@ namespace DataTableEditor
             if (RowDatas == null || RowDatas.Count == 0)
             {
                 Close();
+                GUILayout.EndScrollView();
                 return;
             }
 
@@ -287,8 +332,16 @@ namespace DataTableEditor
 
             if (reorderableList == null)
             {
+#if UNITY_2019_1_OR_NEWER
                 reorderableList =
+                    new UnityInternalBridge.ReorderableList(RowDatas, typeof(List<DataTableRowData>), true, false, true,
+                        true);
+
+#else
+                 reorderableList =
                     new ReorderableList(RowDatas, typeof(List<DataTableRowData>), true, false, true, true);
+
+#endif
 
                 reorderableList.drawElementCallback = (Rect rect, int index, bool selected, bool focused) =>
                 {
@@ -306,7 +359,7 @@ namespace DataTableEditor
                     }
                 };
 
-                reorderableList.onAddCallback = (ReorderableList list) =>
+                reorderableList.onAddCallback = list =>
                 {
                     bool result =
                         EditorUtility.DisplayDialog("提示", "添加 行 或 列", "行", "列");
@@ -339,7 +392,7 @@ namespace DataTableEditor
                     }
                 };
 
-                reorderableList.onRemoveCallback = (ReorderableList list) =>
+                reorderableList.onRemoveCallback = list =>
                 {
                     bool result =
                         EditorUtility.DisplayDialog("提示", "移除 行 或 列", "行", "列");
@@ -389,7 +442,7 @@ namespace DataTableEditor
 
             if (result)
             {
-                DataTableUtility.SaveDataTableFile(FilePath, RowDatas);
+                DataTableUtility.SaveDataTableFile(FilePath, RowDatas,m_encoding);
             }
         }
 
@@ -423,6 +476,10 @@ namespace DataTableEditor
         private bool CheckDirty()
         {
             Debug.Log("执行清理");
+            if (RowDatasTemp == null || RowDatas == null)
+            {
+                return false;
+            }
 
             if (RowDatasTemp.Count != RowDatas.Count)
                 return true;
