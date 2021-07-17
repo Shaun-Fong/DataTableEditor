@@ -1,0 +1,17 @@
+{
+	"name": "com.shaunhe.datatableeditor",
+	"displayName": "DataTableEditor",
+	"version": "1.0.0",
+	"unity": "2018.1",
+	"unityRelease": "1f1",
+	"description": "A DataTable Editor",
+	"keywords": [
+		"DataTableEditor"
+	],
+	"author": {
+		"name": "DataTableEditor"
+	},
+	"type": "library",
+	"hideInEditor": false,
+	"category": "DataTableEditor"
+}
