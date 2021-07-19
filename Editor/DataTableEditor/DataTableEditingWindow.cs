@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using static DataTableEditor.Utility;
 
@@ -81,14 +82,13 @@ namespace DataTableEditor
         private void OnGUI()
         {
             m_scrollViewPos = GUILayout.BeginScrollView(m_scrollViewPos);
-
             if (RowDatas == null || RowDatas.Count == 0)
             {
                 Close();
                 GUILayout.EndScrollView();
                 return;
             }
-
+            
             CheckColumnCount();
 
             if (LightMode == 0)
@@ -99,7 +99,7 @@ namespace DataTableEditor
             {
                 Theme = "PreferencesSectionBox";
             }
-
+            
             if (reorderableList == null)
             {
 #if UNITY_2019_1_OR_NEWER
@@ -117,12 +117,20 @@ namespace DataTableEditor
                 {
                     for (int i = 0; i < RowDatas[index].Data.Count; i++)
                     {
-                        rect.width =
-                            (this.position.width - 20) /
-                            RowDatas[index].Data.Count;
-
+                        if (RowDatas[index].Data.Count > 10)
+                        {
+                            rect.width =
+                                (this.position.width - 20) /
+                                10;
+                        }
+                        else
+                        {
+                            rect.width =
+                                (this.position.width - 20) /
+                                RowDatas[index].Data.Count;
+                        }
+                        
                         rect.x = rect.width * i + 20;
-
                         RowDatas[index].Data[i] =
                             EditorGUI.TextField(rect, "", RowDatas[index].Data[i],
                                 this.Theme);
@@ -199,7 +207,18 @@ namespace DataTableEditor
             }
 
             reorderableList.DoLayoutList();
-
+            
+            if (RowDatas != null && RowDatas.Count>0)
+            {
+                if (RowDatas[0].Data.Count > 10)
+                {
+                    float listItemWidth = 0f;
+                    float listX = 0f;
+                    listItemWidth = (position.width - 20) / 10;
+                    listX = listItemWidth * (RowDatas[0].Data.Count-1) + 20;
+                    GUILayout.Label("",new GUIStyle(){fixedWidth = listX});
+                }
+            }
             GUILayout.EndScrollView();
         }
 

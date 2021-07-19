@@ -32,7 +32,7 @@ namespace DataTableEditor
 #if UNITY_2019_1_OR_NEWER
             Instance = LauncherEditorWindow.CreateWindow<LauncherEditorWindow>("数据表编辑器");
 #else
-            Instance = EditorWindowUtility.CreateWindow<DataTableEditor>("数据表编辑器");
+            Instance = EditorWindowUtility.CreateWindow<LauncherEditorWindow>("数据表编辑器");
 #endif
 
             Instance.Show();
