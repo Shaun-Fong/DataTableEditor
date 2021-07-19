@@ -1,14 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using static DataTableEditor.Utility;
 
 namespace DataTableEditor
 {
-
     public class DataTableEditingWindowInstance
     {
         public DataTableEditingWindow Instance { get; private set; }
@@ -30,7 +31,6 @@ namespace DataTableEditor
 
     public class DataTableEditingWindow : EditorWindow
     {
-
         public List<DataTableRowData> RowDatas { get; private set; }
 
         private List<DataTableRowData> RowDatasTemp;
@@ -48,10 +48,11 @@ namespace DataTableEditor
         private Vector2 m_scrollViewPos;
 
         private Encoding m_encoding;
-
+        private int m_codePage;
         public void OpenWindow(string path, Encoding encoding)
         {
             m_encoding = encoding;
+            m_codePage = encoding.CodePage;
             FilePath = path;
             RowDatas = DataTableUtility.LoadDataTableFile(FilePath, m_encoding);
 
@@ -81,7 +82,6 @@ namespace DataTableEditor
         private void OnGUI()
         {
             m_scrollViewPos = GUILayout.BeginScrollView(m_scrollViewPos);
-
             if (RowDatas == null || RowDatas.Count == 0)
             {
                 Close();
@@ -108,7 +108,7 @@ namespace DataTableEditor
                         true);
 
 #else
-                 reorderableList =
+                reorderableList =
                     new ReorderableList(RowDatas, typeof(List<DataTableRowData>), true, false, true, true);
 
 #endif
@@ -117,12 +117,20 @@ namespace DataTableEditor
                 {
                     for (int i = 0; i < RowDatas[index].Data.Count; i++)
                     {
-                        rect.width =
-                            (this.position.width - 20) /
-                            RowDatas[index].Data.Count;
+                        if (RowDatas[index].Data.Count > 10)
+                        {
+                            rect.width =
+                                (this.position.width - 20) /
+                                10;
+                        }
+                        else
+                        {
+                            rect.width =
+                                (this.position.width - 20) /
+                                RowDatas[index].Data.Count;
+                        }
 
                         rect.x = rect.width * i + 20;
-
                         RowDatas[index].Data[i] =
                             EditorGUI.TextField(rect, "", RowDatas[index].Data[i],
                                 this.Theme);
@@ -140,7 +148,7 @@ namespace DataTableEditor
                         {
                             RowDatas.Add(new DataTableRowData()
                             {
-                                Data = new List<string>() { "", "", "", "" }
+                                Data = new List<string>() {"", "", "", ""}
                             });
                         }
                         else
@@ -160,6 +168,7 @@ namespace DataTableEditor
                         for (int i = 0; i < RowDatas.Count; i++)
                             RowDatas[i].Data.Add("");
                     }
+                    Focus();
                 };
 
                 reorderableList.onRemoveCallback = list =>
@@ -178,6 +187,7 @@ namespace DataTableEditor
                             RowDatas[i].Data.RemoveAt(RowDatas[i].Data.Count - 1);
                         }
                     }
+                    Focus();
                 };
 
                 reorderableList.drawHeaderCallback = (Rect rect) =>
@@ -200,7 +210,72 @@ namespace DataTableEditor
 
             reorderableList.DoLayoutList();
 
+            if (RowDatas != null && RowDatas.Count > 0)
+            {
+                if (RowDatas[0].Data.Count > 10)
+                {
+                    float listItemWidth = 0f;
+                    float listX = 0f;
+                    listItemWidth = (position.width - 20) / 10;
+                    listX = listItemWidth * (RowDatas[0].Data.Count - 1) + 20;
+                    GUILayout.Label("", new GUIStyle() {fixedWidth = listX});
+                }
+            }
+
             GUILayout.EndScrollView();
+            if (IsCombinationKey(EventModifiers.Control, KeyCode.S, EventType.KeyDown))
+            {
+                SaveDataTable();
+            }
+        }
+
+        private void SaveDataTable()
+        {
+            if (!CheckDirty())
+                return;
+
+            RowDatasTemp = new List<DataTableRowData>();
+            for (int i = 0; i < RowDatas.Count; i++)
+            {
+                DataTableRowData data = new DataTableRowData();
+
+                for (int j = 0; j < RowDatas[i].Data.Count; j++)
+                {
+                    data.Data.Add(RowDatas[i].Data[j]);
+                }
+
+                RowDatasTemp.Add(data);
+            }
+
+            if (m_encoding == null)
+            {
+                m_encoding = Encoding.GetEncoding(m_codePage);
+            }
+
+            DataTableUtility.SaveDataTableFile(FilePath, RowDatas, m_encoding);
+        }
+
+        private bool IsCombinationKey(EventModifiers preKey, KeyCode postKey, EventType postKeyEvent)
+        {
+            if (preKey != EventModifiers.None)
+            {
+                bool eventDown = (Event.current.modifiers & preKey) != 0;
+                if (eventDown && Event.current.rawType == postKeyEvent && Event.current.keyCode == postKey)
+                {
+                    Event.current.Use();
+                    return true;
+                }
+            }
+            else
+            {
+                if (Event.current.rawType == postKeyEvent && Event.current.keyCode == postKey)
+                {
+                    Event.current.Use();
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void OnDisable()
@@ -209,11 +284,11 @@ namespace DataTableEditor
                 return;
 
             bool result = EditorUtility.DisplayDialog("提示", "你已经对表格进行了修改，是否需要保存？", "是", "否");
-
             if (result)
             {
-                DataTableUtility.SaveDataTableFile(FilePath, RowDatas, m_encoding);
+                SaveDataTable();
             }
+            Focus();
         }
 
         /// <summary>
