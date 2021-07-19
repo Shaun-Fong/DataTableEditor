@@ -1,0 +1,18 @@
+{
+    "name": "com.shaunhe.datatableeditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:fb5e63ff1afc8f84994de25a00489fbc"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
