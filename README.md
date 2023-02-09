@@ -21,9 +21,19 @@
 把`https://github.com/shaun-fong/DataTableEditor.git`粘贴进去，然后点击添加，等待下载完成自动编译即可。
  
  
-### 二、通过unitypackage包进行安装
+### 二、通过OpenUPM安装
 
-直接到[发布页](https://github.com/shaun-fong/DataTableEditor/releases)找到后缀为`unitypackage`的文件，下载导入即可。
+- 打开unity的 Edit/Project Settings/Package Manager
+- 添加一个新的 Scoped Registry并填入下方资料
+名称 `package.openupm.com`
+URL `https://package.openupm.com`
+- 点击 Save (or Apply)
+- 打开 Window/Package Manager
+- 点击 +
+- 选择 Add package by name... or Add package from git URL...
+- 粘贴 com.shaunfong.datatableeditor 到 name
+- 粘贴 1.0.2 到 version
+- 点击 Add
  
  
  
