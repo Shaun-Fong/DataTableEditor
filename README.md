@@ -1,16 +1,17 @@
-# Data Table Editor 数据表编辑器
+<p align="center">
+<h1 align="center"><b>DataTable Editor 数据表编辑器</b></h1>
+<br>
+<p align="center">
+<img src="https://z3.ax1x.com/2021/07/17/W18IxO.png">
+</p>
 
- 
+<p align="center">
+<img src="https://z3.ax1x.com/2021/07/17/W18TMD.png">
+</p>
 
-## 预览
-
-[<img src="https://z3.ax1x.com/2021/07/17/W18IxO.png" title="" alt="W18IxO.png" data-align="center">](https://imgtu.com/i/W18IxO)
-
-[<img src="https://z3.ax1x.com/2021/07/17/W18TMD.png" title="" alt="W18TMD.png" data-align="center">](https://imgtu.com/i/W18TMD)
-
-与[Game Framework框架](https://gameframework.cn/)搭配食用更佳
-
-
+<p align="center">
+与<a href="https://gameframework.cn/"><strong>Game Framework框架</strong></a>搭配食用更佳
+</p>
 
 ## 安装
 
