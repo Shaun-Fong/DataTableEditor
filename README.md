@@ -26,8 +26,11 @@
 
 - 打开unity的 Edit/Project Settings/Package Manager
 - 添加一个新的 Scoped Registry并填入下方资料
+
 名称 `package.openupm.cn`
+
 URL `https://package.openupm.cn`
+
 - 点击 Save (or Apply)
 - 打开 Window/Package Manager
 - 点击 +
